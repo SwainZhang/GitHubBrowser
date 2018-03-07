@@ -25,19 +25,26 @@ export default class CustomKeyPage extends Component {
         super(props)
         this.state = {
             data: [
-                {name: 'Android', checked: true},
+                {name: 'Android', checked: false},
                 {name: 'IOS', checked: false},
                 {name: 'React Native', checked: false},
-                {name: 'Javascript', checked: true},
-                {name: 'Java', checked: true}
+                {name: 'Javascript', checked: false},
+                {name: 'Java', checked: false}
 
             ]
         }
     }
 
     saveCustomKey = () => {
-        console.log("保存成功");
-        ToastAndroid.show('保存成功',1000);
+        console.log("保存...");
+        try {
+            AsyncStorage.setItem('custom_key',JSON.stringify(this.state.data))
+            console.log("保存成功="+this.state.data);
+            ToastAndroid.show("保存成功",1000);
+        }catch (e){
+            ToastAndroid.show(e,1000);
+        }
+
     }
     renderRightBtn = () => {
         return (<View style={styles.rightBtn}>
@@ -47,7 +54,6 @@ export default class CustomKeyPage extends Component {
         </View>)
     }
     renderCheckBoxRows = () => {
-        var array = Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
         console.log(`半屏幕宽度=${simeScreen}`);
         return (<View style={styles.cbRowContainer}>
             {this.state.data.map((item, i) => {
@@ -76,6 +82,17 @@ export default class CustomKeyPage extends Component {
         </View>)
     }
 
+    componentDidMount() {
+        AsyncStorage.getItem('custom_key').then(value=>{
+            if(value !== null){
+                console.log("custom_key="+JSON.parse(value));
+                this.setState({data:JSON.parse(value)})
+            }else {
+                console.log(value)
+                ToastAndroid.show(value,1000);
+            }
+        });
+    }
     render() {
         return (<View style={styles.container}>
             <NavigationBar title='自定义分类' rightBtn={this.renderRightBtn()}/>

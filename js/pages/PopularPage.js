@@ -11,9 +11,11 @@ import {
     ListView,
     RefreshControl,
     TouchableOpacity,
+    AsyncStorage,
+    ToastAndroid,
 } from 'react-native';
 import NavigationBar from '../component/NavigationBar';
-import ScrollableTabView from  'react-native-scrollable-tab-view';
+import ScrollableTabView from  'react-native-scrollable-tab-view';//Tab横向滑动
 import ProjectRow from '../component/ProjectRow';
 export default class PopularPage extends Component {
     constructor(props) {
@@ -35,6 +37,27 @@ export default class PopularPage extends Component {
             </TouchableOpacity>
 
         </View>)
+    }
+
+    componentDidMount=()=>{
+        /*try {
+           const value = await AsyncStorage.getItem('custom_key');
+           if(value !== null){
+
+           }
+        }catch (e){
+
+        }*/
+
+        AsyncStorage.getItem('custom_key').then(value=>{
+            if(value !== null){
+                console.log("custom_key="+JSON.parse(value));
+               // this.setState({languages:JSON.parse(value)})
+            }else {
+                console.log(value)
+                ToastAndroid.show(value,1000);
+            }
+        });
     }
 
     render() {
